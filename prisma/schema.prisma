@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id         Int    @id @default(autoincrement())
+  nombre     String @db.VarChar(50)
+  email      String @db.VarChar(150)
+  password   String @db.VarChar(200)
+  pais       String @db.VarChar(30)
+  direccion  String @db.VarChar(50)
+  url_imagen String @db.Text
+
+  rol_id Int? // foreign key
+
+  rol       Roles?    @relation(fields: [rol_id], references: [id])
+  Carrito   Carrito? @relation(fields: [carrito_id], references: [id])
+  carrito_id Int?
+
+  @@map("usuario")
+}
+
+model Roles {
+  id       Int       @id @default(autoincrement())
+  nombre   String 	 @db.VarChar(50)
+  usuarios Usuario[]
+
+  @@map("roles")
+}
+
+model Carrito {
+  id Int @id @default(autoincrement())
+  total Int
+
+  usuario_id  Int // this is a foreign key
+  
+	usuario     		Usuario[]
+  carritoProducto CarritoProducto[]
+
+  @@map("carrito")
+}
+
+model CarritoProducto {
+  producto_id Int
+  carrito_id  Int
+  cantidad    Int
+
+  producto Producto @relation(fields: [producto_id], references: [id], onDelete: Cascade)
+  carrito  Carrito  @relation(fields: [carrito_id], references: [id], onDelete: Cascade)
+
+  @@id([producto_id, carrito_id])
+  @@map("carrito_producto")
+}
+
+model Producto {
+  id 			Int @id @default(autoincrement())
+  nombre 	String @db.VarChar(50)
+	precio 	Int
+	descripcion String @db.Text
+	valoracion 	Int
+	url_imagen 	String @db.MediumText
+
+	categoria_id Int
+
+	categoria Categorias @relation(fields: [categoria_id], references: [id])
+  carritoProducto CarritoProducto[]
+
+  @@map("producto")
+}
+
+model Categorias {
+  id Int @id @default(autoincrement())
+
+	nombre String @db.VarChar(50)
+	descripcion String @db.Text
+
+	producto Producto[]
+
+  @@map("categorias")
+}
