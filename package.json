@@ -5,7 +5,8 @@
 	"type": "module",
   "scripts": {
     "serve": "tsx src/server.ts",
-		"prisma:format": "prisma format"
+		"prisma:format": "prisma format",
+		"prisma:migrate": "prisma migrate dev"
   },
   "keywords": [],
   "author": "",
