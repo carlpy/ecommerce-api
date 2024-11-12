@@ -24,28 +24,27 @@ model Usuario {
 
   rol_id Int? // foreign key
 
-  rol       Roles?    @relation(fields: [rol_id], references: [id])
-  Carrito   Carrito? @relation(fields: [carrito_id], references: [id])
-  carrito_id Int?
+  rol     Roles?   @relation(fields: [rol_id], references: [id])
+  carrito Carrito?
 
   @@map("usuario")
 }
 
 model Roles {
   id       Int       @id @default(autoincrement())
-  nombre   String 	 @db.VarChar(50)
+  nombre   String    @db.VarChar(50)
   usuarios Usuario[]
 
   @@map("roles")
 }
 
 model Carrito {
-  id Int @id @default(autoincrement())
+  id    Int @id @default(autoincrement())
   total Int
 
-  usuario_id  Int // this is a foreign key
-  
-	usuario     		Usuario[]
+  usuario_id Int     @unique // this is a foreign key
+  usuario    Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
   carritoProducto CarritoProducto[]
 
   @@map("carrito")
@@ -64,16 +63,16 @@ model CarritoProducto {
 }
 
 model Producto {
-  id 			Int @id @default(autoincrement())
-  nombre 	String @db.VarChar(50)
-	precio 	Int
-	descripcion String @db.Text
-	valoracion 	Int
-	url_imagen 	String @db.MediumText
+  id          Int    @id @default(autoincrement())
+  nombre      String @db.VarChar(50)
+  precio      Int
+  descripcion String @db.Text
+  valoracion  Int
+  url_imagen  String @db.MediumText
 
-	categoria_id Int
+  categoria_id Int
 
-	categoria Categorias @relation(fields: [categoria_id], references: [id])
+  categoria       Categorias        @relation(fields: [categoria_id], references: [id])
   carritoProducto CarritoProducto[]
 
   @@map("producto")
@@ -82,10 +81,10 @@ model Producto {
 model Categorias {
   id Int @id @default(autoincrement())
 
-	nombre String @db.VarChar(50)
-	descripcion String @db.Text
+  nombre      String @db.VarChar(50)
+  descripcion String @db.Text
 
-	producto Producto[]
+  producto Producto[]
 
   @@map("categorias")
 }
