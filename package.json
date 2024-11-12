@@ -4,7 +4,8 @@
   "main": "index.js",
 	"type": "module",
   "scripts": {
-    "serve": "tsx src/server.ts"
+    "serve": "tsx src/server.ts",
+		"prisma:format": "prisma format"
   },
   "keywords": [],
   "author": "",
